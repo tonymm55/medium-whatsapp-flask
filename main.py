@@ -6,6 +6,7 @@ import openai
 import logging
 
 logging.basicConfig(level=logging.INFO)
+# print("Environment Variables:", os.environ)
 
 app = Flask(__name__)
 load_dotenv()
@@ -13,7 +14,10 @@ load_dotenv()
 # my_key = os.getenv("OPENAI_API_KEY")
 # openai.api_key = my_key
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
 # print(f"API Key: {openai.api_key}")
+# print("API Key:", os.environ.get("OPENAI_API_KEY"))
+# print("API Key from Env:", os.getenv("OPENAI_API_KEY"))
 
 def generate_answer(question):
     model_engine = "gpt-3.5-turbo"
@@ -36,9 +40,11 @@ def generate_answer(question):
 def chatgpt():
     incoming_que = request.values.get('Body', '').lower()
     logging.info(f"Received message: {incoming_que}")
+    logging.info(f"Received message: {incoming_que}")
     print(incoming_que)
 
     answer = generate_answer(incoming_que)
+    logging.info(f"Generated answer: {answer}")
     logging.info(f"Generated answer: {answer}")
     print(answer)
 
