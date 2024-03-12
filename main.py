@@ -13,7 +13,7 @@ load_dotenv()
 # my_key = os.getenv("OPENAI_API_KEY")
 # openai.api_key = my_key
 openai.api_key = os.getenv("OPENAI_API_KEY")
-print(f"API Key: {openai.api_key}")
+# print(f"API Key: {openai.api_key}")
 
 def generate_answer(question):
     model_engine = "gpt-3.5-turbo"
