@@ -1,0 +1,6 @@
+twilio
+flask
+requests
+openai==0.28
+pyngrok
+python-dotenv
