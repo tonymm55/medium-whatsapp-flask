@@ -40,11 +40,9 @@ def generate_answer(question):
 def chatgpt():
     incoming_que = request.values.get('Body', '').lower()
     logging.info(f"Received message: {incoming_que}")
-    logging.info(f"Received message: {incoming_que}")
     print(incoming_que)
 
     answer = generate_answer(incoming_que)
-    logging.info(f"Generated answer: {answer}")
     logging.info(f"Generated answer: {answer}")
     print(answer)
 
