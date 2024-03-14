@@ -12,6 +12,7 @@ load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# 
 def generate_answer(question):
     model_engine = "gpt-3.5-turbo"
     prompt = f"Q: {question}\nA:"
@@ -28,10 +29,10 @@ def generate_answer(question):
     except Exception as e:
         return f"Error generating answer: {e}"
     
-
-@app.route('/chatgpt', methods=['POST'])
+# This /chatgpt route is defined to handle POST requests from Twilio 
+@app.route('/chatgpt', methods=['POST']) #Post request from Twilio URL (user SMS).
 def chatgpt():
-    incoming_que = request.values.get('Body', '').lower()
+    incoming_que = request.values.get('Body', '').lower() #incoming message retrieved.
     logging.info(f"Received message: {incoming_que}")
     print(incoming_que)
 
@@ -39,11 +40,13 @@ def chatgpt():
     logging.info(f"Generated answer: {answer}")
     print(answer)
 
-    bot_resp = MessagingResponse()
-    msg = bot_resp.message()
-    msg.body(answer)
 
-    return str(bot_resp)
+# Send response back to User via Twilio URL
+    bot_resp = MessagingResponse() #response object is created
+    msg = bot_resp.message()  
+    msg.body(answer) #generated answer added to response as body of a message
+
+    return str(bot_resp) #response converted to string and returned. Twilio handles SMS
 
 @app.route('/')
 def home():
