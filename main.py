@@ -22,19 +22,18 @@ client = Client(account_sid, auth_token)
 
 # Function to generate message response
 def generate_answer(question):
-    messages = [{"role": "system", "content": "You are an assistant that is informing the lead that they have been approved for car finance and need to progress to gettin a call booked"},
-    {"role": "user", "content": prompt}]
+    model_engine = "gpt-3.5-turbo"
     prompt = f"Q: {question}\nA:"
 
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            temperature=0,
+            model=model_engine,
+            messages=[{"role": "system", "content": "You are a helpful assistant."},
+                      {"role": "user", "content": prompt}]
         )
 
-        return response.choices[0].message['content'].strip()
-
+        answer = response['choices'][0]['message']['content'].strip()
+        return answer
     except Exception as e:
         return f"Error generating answer: {e}"
     
@@ -81,8 +80,6 @@ def chatgpt():
 @app.route('/')
 def home():
     return 'Hello, World!'
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=False, port=5001)
