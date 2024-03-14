@@ -38,25 +38,25 @@ def generate_answer(question):
         return f"Error generating answer: {e}"
     
 
-# FLask API Endpoints
+# Flask API Endpoints
     
 # This /chatgpt route is defined to handle POST requests from Twilio 
-@app.route('/chatgpt', methods=['POST']) #Post request from Twilio URL (user SMS).
+@app.route('/chatgpt', methods=['POST']) # Post request from Twilio URL (user SMS).
 def chatgpt():
-    incoming_que = request.values.get('Body', '').lower() #incoming message retrieved.
-    logging.info(f"Received message: {incoming_que}")
-    print(incoming_que)
+    # Placeholder message to trigger response (can be removed)
+    initial_message = "Hello there, you have been approved for car finance!"
 
-    answer = generate_answer(incoming_que)
+    # Generate response using ChatGPT
+    answer = generate_answer(initial_message)
     logging.info(f"Generated answer: {answer}")
     print(answer)
 
     # Send response back to User via Twilio URL
-    bot_resp = MessagingResponse() #response object is created
+    bot_resp = MessagingResponse() # Response object is created
     msg = bot_resp.message()  
-    msg.body(answer) #generated answer added to response as body of a message
+    msg.body(answer) # Generated answer added to response as body of a message
 
-    return str(bot_resp) #response converted to string and returned. Twilio handles SMS
+    return str(bot_resp) # Response converted to string and returned. Twilio handles SMS
 
 # Route to send the initial message
 @app.route('/send-initial-message', methods=['POST'])
