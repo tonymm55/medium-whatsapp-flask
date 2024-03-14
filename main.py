@@ -23,13 +23,20 @@ client = Client(account_sid, auth_token)
 # Function to generate message response
 def generate_answer(question):
     model_engine = "gpt-3.5-turbo"
-    prompt = f"Q: {question}\nA:"
+    # Define the initial message from the assistant
+    initial_message = "Hi there, you have been approved for car finance!"
+
+    # Structure the messages array
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "assistant", "content": initial_message},
+        {"role": "user", "content": question}
+    ]
 
     try:
         response = openai.ChatCompletion.create(
             model=model_engine,
-            messages=[{"role": "system", "content": "You are a helpful assistant."},
-                      {"role": "user", "content": prompt}]
+            messages=messages
         )
 
         answer = response['choices'][0]['message']['content'].strip()
