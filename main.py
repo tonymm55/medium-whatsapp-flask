@@ -16,6 +16,8 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Twilio credentials
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
 auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+twilio_number = os.getenv('TWILIO_NUMBER')
+to_number = os.getenv('USER_NUMBER')
 client = Client(account_sid, auth_token)
 
 # Function to generate message response
@@ -35,6 +37,9 @@ def generate_answer(question):
     except Exception as e:
         return f"Error generating answer: {e}"
     
+
+# FLask API Endpoints
+    
 # This /chatgpt route is defined to handle POST requests from Twilio 
 @app.route('/chatgpt', methods=['POST']) #Post request from Twilio URL (user SMS).
 def chatgpt():
@@ -46,13 +51,27 @@ def chatgpt():
     logging.info(f"Generated answer: {answer}")
     print(answer)
 
-
-# Send response back to User via Twilio URL
+    # Send response back to User via Twilio URL
     bot_resp = MessagingResponse() #response object is created
     msg = bot_resp.message()  
     msg.body(answer) #generated answer added to response as body of a message
 
     return str(bot_resp) #response converted to string and returned. Twilio handles SMS
+
+@app.route('/send-initial-message', methods=['POST'])
+def send_initial_message():
+    # Extract phone number and initial message from the request
+    phone_number = request.form.get('phone_number')
+    initial_message = request.form.get('message')
+    
+    # Send initial message to the user
+    message = client.messages.create(
+        body=initial_message,
+        from_=f"whatsapp:{twilio_number}", # Your Twilio phone number
+        to=f"whatsapp:{to_number}"
+    )
+    
+    return 'Initial message sent', 200
 
 @app.route('/')
 def home():
