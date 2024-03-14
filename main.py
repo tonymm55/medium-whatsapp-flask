@@ -22,18 +22,19 @@ client = Client(account_sid, auth_token)
 
 # Function to generate message response
 def generate_answer(question):
-    model_engine = "gpt-3.5-turbo"
+    messages = [{"role": "system", "content": "You are an assistant that is informing the lead that they have been approved for car finance and need to progress to gettin a call booked"},
+    {"role": "user", "content": prompt}]
     prompt = f"Q: {question}\nA:"
 
     try:
         response = openai.ChatCompletion.create(
-            model=model_engine,
-            messages=[{"role": "system", "content": "You are a helpful assistant."},
-                      {"role": "user", "content": prompt}]
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=0,
         )
 
-        answer = response['choices'][0]['message']['content'].strip()
-        return answer
+        return response.choices[0].message['content'].strip()
+
     except Exception as e:
         return f"Error generating answer: {e}"
     
@@ -43,14 +44,12 @@ def generate_answer(question):
 # This /chatgpt route is defined to handle POST requests from Twilio 
 @app.route('/chatgpt', methods=['POST']) # Post request from Twilio URL (user SMS).
 def chatgpt():
-    # Placeholder message to trigger response (can be removed)
-    initial_message = "Hello there, you have been approved for car finance!"
+    incoming_que = request.values.get('Body', '').lower()
+    print(incoming_que)
 
-    # Generate response using ChatGPT
-    answer = generate_answer(initial_message)
-    logging.info(f"Generated answer: {answer}")
+    answer = generate_answer(incoming_que)
     print(answer)
-
+    
     # Send response back to User via Twilio URL
     bot_resp = MessagingResponse() # Response object is created
     msg = bot_resp.message()  
@@ -59,25 +58,25 @@ def chatgpt():
     return str(bot_resp) # Response converted to string and returned. Twilio handles SMS
 
 # Route to send the initial message
-@app.route('/send-initial-message', methods=['POST'])
-def send_initial_message():
-    # Extract phone number and initial message from the request
-    to_number = request.form.get('phone_number')
-    initial_message = request.form.get('message')
+# @app.route('/send-initial-message', methods=['POST'])
+# def send_initial_message():
+#     # Extract phone number and initial message from the request
+#     to_number = request.form.get('phone_number')
+#     initial_message = request.form.get('message')
     
-    try:
-        # Send initial message to the user
-        message = client.messages.create(
-          from_=f"whatsapp:{twilio_number}", # Your Twilio phone number
-          body='Hello there!', 
-          to=f"whatsapp:{to_number}",
-        )
-        print(message.sid)
-        return 'Initial message sent', 200
+#     try:
+#         # Send initial message to the user
+#         message = client.messages.create(
+#           from_=f"whatsapp:{twilio_number}", # Your Twilio phone number
+#           body='Hello there!', 
+#           to=f"whatsapp:{to_number}",
+#         )
+#         print(message.sid)
+#         return 'Initial message sent', 200
 
-    except Exception as e:
-        logging.error(f"Error sending initial message: {e}")
-        return 'Error sending initial message', 500
+#     except Exception as e:
+#         logging.error(f"Error sending initial message: {e}")
+#         return 'Error sending initial message', 500
 
 @app.route('/')
 def home():
