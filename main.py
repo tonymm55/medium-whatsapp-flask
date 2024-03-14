@@ -1,4 +1,5 @@
 from flask import Flask, request
+from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
 import os
@@ -12,7 +13,12 @@ load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# 
+# Twilio credentials
+account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+client = Client(account_sid, auth_token)
+
+# Function to generate message response
 def generate_answer(question):
     model_engine = "gpt-3.5-turbo"
     prompt = f"Q: {question}\nA:"
