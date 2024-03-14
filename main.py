@@ -17,7 +17,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
 auth_token = os.getenv('TWILIO_AUTH_TOKEN')
 twilio_number = os.getenv('TWILIO_NUMBER')
-to_number = os.getenv('USER_NUMBER')
+# to_number = os.getenv('USER_NUMBER')
 client = Client(account_sid, auth_token)
 
 # Function to generate message response
@@ -58,24 +58,31 @@ def chatgpt():
 
     return str(bot_resp) #response converted to string and returned. Twilio handles SMS
 
+# Route to send the initial message
 @app.route('/send-initial-message', methods=['POST'])
 def send_initial_message():
     # Extract phone number and initial message from the request
-    phone_number = request.form.get('phone_number')
+    to_number = request.form.get('phone_number')
     initial_message = request.form.get('message')
     
-    # Send initial message to the user
-    message = client.messages.create(
-        body=initial_message,
-        from_=f"whatsapp:{twilio_number}", # Your Twilio phone number
-        to=f"whatsapp:{to_number}"
-    )
-    
-    return 'Initial message sent', 200
+    try:
+        # Send initial message to the user
+        message = client.messages.create(
+          body=initial_message,
+          from_=twilio_number, # Your Twilio phone number
+          to=to_number
+        )
+        return 'Initial message sent', 200
+
+    except Exception as e:
+        logging.error(f"Error sending initial message: {e}")
+        return 'Error sending initial message', 500
 
 @app.route('/')
 def home():
     return 'Hello, World!'
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=False, port=5001)
