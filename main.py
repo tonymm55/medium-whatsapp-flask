@@ -17,7 +17,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
 auth_token = os.getenv('TWILIO_AUTH_TOKEN')
 twilio_number = os.getenv('TWILIO_NUMBER')
-# to_number = os.getenv('USER_NUMBER')
+to_number = os.getenv('USER_NUMBER')
 client = Client(account_sid, auth_token)
 
 # Function to generate message response
@@ -68,10 +68,11 @@ def send_initial_message():
     try:
         # Send initial message to the user
         message = client.messages.create(
-          body=initial_message,
-          from_=twilio_number, # Your Twilio phone number
-          to=to_number
+          from_=f"whatsapp:{twilio_number}", # Your Twilio phone number
+          body='Hello there!', 
+          to=f"whatsapp:{to_number}",
         )
+        print(message.sid)
         return 'Initial message sent', 200
 
     except Exception as e:
