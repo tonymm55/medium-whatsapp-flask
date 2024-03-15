@@ -23,7 +23,7 @@ client = Client(account_sid, auth_token)
 
 message = client.messages.create(
                               from_=f'whatsapp:{twilio_number}',
-                              body='Hello there!',
+                              body='Hi, its Nat from We Finance Any Car. Great news your car finance has been approved! Are you still interested?',
                               to=f'whatsapp:{to_number}'
                           )
 print(message.sid)
@@ -72,30 +72,18 @@ def chatgpt():
 
     return str(bot_resp) # Response converted to string and returned. Twilio handles SMS
 
-# Route to send the initial message
-# @app.route('/send-initial-message', methods=['POST'])
-# def send_initial_message():
-#     # Extract phone number and initial message from the request
-#     to_number = request.form.get('phone_number')
-#     initial_message = request.form.get('message')
-    
-#     try:
-#         # Send initial message to the user
-#         message = client.messages.create(
-#           from_=f"whatsapp:{twilio_number}", # Your Twilio phone number
-#           body='Hello there!', 
-#           to=f"whatsapp:{to_number}",
-#         )
-#         print(message.sid)
-#         return 'Initial message sent', 200
-
-#     except Exception as e:
-#         logging.error(f"Error sending initial message: {e}")
-#         return 'Error sending initial message', 500
-
 @app.route('/')
 def home():
     return 'Hello, World!'
+
+@app.route('/send-initial-message')
+def initial_message():
+    message = client.messages.create(
+                              from_=f'whatsapp:{twilio_number}',
+                              body='Hi, its Nat from We Finance Any Car. Great news your car finance has been approved! Are you still interested?',
+                              to=f'whatsapp:{to_number}'
+                          )
+print(message.sid)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=False, port=5001)
