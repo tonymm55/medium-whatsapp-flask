@@ -35,7 +35,7 @@ print(message.sid)
 def generate_answer(question):
     model_engine = "gpt-3.5-turbo"
     # Define the initial message from the assistant
-    initial_message = "Hi, it's Nat from We Finance Any Car. Great news your car finance has been approved! Are you still interested?"
+    initial_message = "Hi, it's Nat from We Finance Any Car. Great news, your car finance has been approved! Are you still interested?"
 
     # Structure the messages array
     messages = [
@@ -74,7 +74,7 @@ def chatgpt():
 
     return str(bot_resp) # Response converted to string and returned. Twilio handles SMS
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     return 'Hello, World!'
 
@@ -83,7 +83,7 @@ def initial_message():
     try:
         message = client.messages.create(
             from_=f'whatsapp:{twilio_number}',
-            body='Hi, its Nat from We Finance Any Car. Great news your car finance has been approved! Are you still interested?',
+            body='Hi, it\'s Nat from We Finance Any Car. Great news, your car finance has been approved! Are you still interested?',
             to=f'whatsapp:{to_number}'
         )
         print(message.sid)
