@@ -20,15 +20,24 @@ twilio_number = os.getenv('TWILIO_NUMBER')
 to_number = os.getenv('USER_NUMBER')
 client = Client(account_sid, auth_token)
 
+
+message = client.messages.create(
+                              from_=f'whatsapp:{twilio_number}',
+                              body='Hello there!',
+                              to=f'whatsapp:{to_number}'
+                          )
+print(message.sid)
+
+
 # Function to generate message response
 def generate_answer(question):
     model_engine = "gpt-3.5-turbo"
     # Define the initial message from the assistant
-    initial_message = "Hi there, you have been approved for car finance!"
+    initial_message = "Hi, it's Nat from We Finance Any Car. Great news your car finance has been approved! Are you still interested?"
 
     # Structure the messages array
     messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "system", "content": "You are a helpful assistant, named Nat."},
         {"role": "assistant", "content": initial_message},
         {"role": "user", "content": question}
     ]
