@@ -2,6 +2,8 @@ from flask import Flask, request
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 from dotenv import load_dotenv
+from flask import jsonify
+
 import os
 import openai
 import logging
@@ -76,14 +78,18 @@ def chatgpt():
 def home():
     return 'Hello, World!'
 
-@app.route('/send-initial-message')
+@app.route('/send-initial-message', methods=['GET'])
 def initial_message():
-    message = client.messages.create(
-                              from_=f'whatsapp:{twilio_number}',
-                              body='Hi, its Nat from We Finance Any Car. Great news your car finance has been approved! Are you still interested?',
-                              to=f'whatsapp:{to_number}'
-                          )
-print(message.sid)
+    try:
+        message = client.messages.create(
+            from_=f'whatsapp:{twilio_number}',
+            body='Hi, its Nat from We Finance Any Car. Great news your car finance has been approved! Are you still interested?',
+            to=f'whatsapp:{to_number}'
+        )
+        print(message.sid)
+        return jsonify({"status": "success", "message_sid": message.sid}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=False, port=5001)
